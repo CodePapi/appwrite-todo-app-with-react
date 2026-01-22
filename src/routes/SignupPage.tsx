@@ -8,7 +8,6 @@ export const SignupPage = () => {
           Create Account
         </h2>
 
-        {/* The extracted Form logic */}
         <SignupForm />
 
         <p className="mt-6 text-center text-sm text-slate-600">
