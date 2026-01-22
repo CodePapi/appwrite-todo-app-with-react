@@ -1,8 +1,6 @@
-// src/lib/auth.ts
-import { account, ID } from './appwrite';
+import { ID, account } from './appwrite';
 
 export const authService = {
-  // Create user and then immediately create a session
   async register(email: string, pass: string, name: string) {
     await account.create(ID.unique(), email, pass, name);
     return this.login(email, pass);
@@ -22,5 +20,5 @@ export const authService = {
     } catch {
       return null;
     }
-  }
+  },
 };

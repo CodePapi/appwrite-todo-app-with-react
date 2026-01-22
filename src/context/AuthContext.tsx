@@ -1,22 +1,23 @@
-// src/context/AuthContext.tsx
-import { createContext, useContext, useEffect, useState } from 'react';
-import { authService } from '../lib/auth';
 import { type Models } from 'appwrite';
-
-interface AuthContextType {
-  user: Models.User<Models.Preferences> | null;
-  loading: boolean;
-  checkUser: () => Promise<void>;
-  logout: () => Promise<void>;
-}
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { authService } from '../lib/auth';
+import { type AuthContextType } from '../types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
+  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     try {
       const currentUser = await authService.getCurrentUser();
       setUser(currentUser);
@@ -25,14 +26,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
+    try {
+      await authService.logout();
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
   };
 
-  useEffect(() => { checkUser(); }, []);
+  useEffect(() => {
+    checkUser();
+  }, [checkUser]);
 
   return (
     <AuthContext.Provider value={{ user, loading, checkUser, logout }}>
