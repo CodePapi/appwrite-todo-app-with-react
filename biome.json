@@ -16,7 +16,8 @@
       "backend/src/tests/items.test.ts",
       "./functions/send-welcome-email/src/main.js",
       "src/main.tsx",
-      "./vite.config.ts"
+      "./vite.config.ts",
+      "./vitest.config.ts"
     ]
   },
   "formatter": {

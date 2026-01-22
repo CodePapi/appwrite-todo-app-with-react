@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "check": "npx @biomejs/biome check .",
     "check:fix": "npx @biomejs/biome check --write .",
-    "format": "npx @biomejs/biome format --write ."
+    "format": "npx @biomejs/biome format --write .",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -33,6 +36,7 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/ui": "^4.0.17",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
