@@ -9,7 +9,6 @@ export default mergeConfig(viteConfig, defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
     alias: {
-      // Use __dirname to ensure absolute paths
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
       'react-router-dom': path.resolve(__dirname, './node_modules/react-router-dom'),
