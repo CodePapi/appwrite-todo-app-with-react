@@ -1,7 +1,13 @@
-// src/context/AuthContext.tsx
-import { createContext, useContext, useEffect, useState } from 'react';
-import { authService } from '../lib/auth';
 import { type Models } from 'appwrite';
+import type React from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { authService } from '../lib/auth';
 
 interface AuthContextType {
   user: Models.User<Models.Preferences> | null;
@@ -13,10 +19,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
+  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
-  const checkUser = async () => {
+  // FIX 1: Wrap checkUser in useCallback
+  // This memoizes the function so it doesn't change on every render
+  const checkUser = useCallback(async () => {
     try {
       const currentUser = await authService.getCurrentUser();
       setUser(currentUser);
@@ -25,14 +35,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
+    try {
+      await authService.logout();
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
   };
 
-  useEffect(() => { checkUser(); }, []);
+  // FIX 2: Add checkUser to the dependency array
+  // Now it's safe because useCallback ensures the reference is stable
+  useEffect(() => {
+    checkUser();
+  }, [checkUser]);
 
   return (
     <AuthContext.Provider value={{ user, loading, checkUser, logout }}>

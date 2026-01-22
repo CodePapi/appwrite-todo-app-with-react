@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { databases, TODO_CONFIG, Query, ID, account } from '../lib/appwrite';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import { ID, TODO_CONFIG, account, databases } from '../lib/appwrite';
 import { type Todo } from '../types/todo';
 
 interface TodoContextType {
@@ -10,90 +16,113 @@ interface TodoContextType {
 }
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
+// FIX 1: buildTree lints (noForEach and noNonNullAssertion)
+const buildTree = (flatList: Todo[]): Todo[] => {
+  const map = new Map<string, Todo>();
+  const roots: Todo[] = [];
 
-export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Use for...of instead of forEach for better performance/standard compliance
+  for (const item of flatList) {
+    map.set(item.$id, { ...item, children: [] });
+  }
+
+  for (const item of flatList) {
+    const currentItem = map.get(item.$id);
+    if (!currentItem) continue;
+
+    if (item.parentId && map.has(item.parentId)) {
+      const parent = map.get(item.parentId);
+      // Safely check if parent and children exist before pushing
+      if (parent?.children) {
+        parent.children.push(currentItem);
+      }
+    } else {
+      roots.push(currentItem);
+    }
+  }
+  return roots;
+};
+export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [todos, setTodos] = useState<Todo[]>([]);
 
-  // Helper to turn flat Appwrite list into a tree
-  const buildTree = (flatList: Todo[]): Todo[] => {
-    const map = new Map<string, Todo>();
-    const roots: Todo[] = [];
-
-    flatList.forEach(item => map.set(item.$id, { ...item, children: [] }));
-    flatList.forEach(item => {
-      if (item.parentId && map.has(item.parentId)) {
-        map.get(item.parentId)!.children!.push(map.get(item.$id)!);
-      } else {
-        roots.push(map.get(item.$id)!);
-      }
-    });
-    return roots;
-  };
-
-  const fetchTodos = async () => {
-    const response = await databases.listDocuments(TODO_CONFIG.databaseId, TODO_CONFIG.collectionId);
-    setTodos(buildTree(response.documents as unknown as Todo[]));
-  };
+  // FIX 2: Wrap fetchTodos in useCallback
+  // This prevents the useEffect from running infinitely if you were to add dependencies
+  const fetchTodos = useCallback(async () => {
+    try {
+      const response = await databases.listDocuments(
+        TODO_CONFIG.databaseId,
+        TODO_CONFIG.collectionId,
+      );
+      setTodos(buildTree(response.documents as unknown as Todo[]));
+    } catch (error) {
+      console.error('Failed to fetch todos:', error);
+    }
+  }, []);
 
   const addTodo = async (content: string, parentId: string | null = null) => {
-    await databases.createDocument(TODO_CONFIG.databaseId, TODO_CONFIG.collectionId, ID.unique(), {
-      content,
-      parentId,
-      isCompleted: false,
-      userId: (await account.get()).$id
-    });
+    await databases.createDocument(
+      TODO_CONFIG.databaseId,
+      TODO_CONFIG.collectionId,
+      ID.unique(),
+      {
+        content,
+        parentId,
+        isCompleted: false,
+        userId: (await account.get()).$id,
+      },
+    );
     fetchTodos();
   };
 
+  const toggleTodo = async (id: string, isCompleted: boolean) => {
+    const newStatus = !isCompleted;
 
+    setTodos((prevTodos) => {
+      const updateInTree = (list: Todo[]): Todo[] => {
+        return list.map((todo) => {
+          if (todo.$id === id) {
+            return { ...todo, isCompleted: newStatus };
+          }
+          if (todo.children && todo.children.length > 0) {
+            return { ...todo, children: updateInTree(todo.children) };
+          }
+          return todo;
+        });
+      };
+      return updateInTree(prevTodos);
+    });
 
-// src/context/TodoContext.tsx
-
-const toggleTodo = async (id: string, isCompleted: boolean) => {
-  const newStatus = !isCompleted;
-
-  // 1. OPTIMISTIC UPDATE: Update local state immediately
-  setTodos((prevTodos) => {
-    const updateInTree = (list: Todo[]): Todo[] => {
-      return list.map((todo) => {
-        if (todo.$id === id) {
-          return { ...todo, isCompleted: newStatus };
-        }
-        if (todo.children) {
-          return { ...todo, children: updateInTree(todo.children) };
-        }
-        return todo;
-      });
-    };
-    return updateInTree(prevTodos);
-  });
-
-  // 2. BACKGROUND UPDATE: Tell Appwrite
-  try {
-    await databases.updateDocument(
-      TODO_CONFIG.databaseId, 
-      TODO_CONFIG.collectionId, 
-      id, 
-      { isCompleted: newStatus }
-    );
-  } catch (error) {
-    console.error("Failed to sync status with server:", error);
-    // 3. ROLLBACK (Optional): You could fetchTodos() here to revert UI if it fails
-    fetchTodos(); 
-  }
-};
-
-  
-  const deleteTodo = async (id: string) => {
     try {
-      await databases.deleteDocument(TODO_CONFIG.databaseId, TODO_CONFIG.collectionId, id);
-      await fetchTodos();
+      await databases.updateDocument(
+        TODO_CONFIG.databaseId,
+        TODO_CONFIG.collectionId,
+        id,
+        { isCompleted: newStatus },
+      );
     } catch (error) {
-      console.error("Failed to delete todo", error);
+      console.error('Failed to sync status with server:', error);
+      fetchTodos();
     }
   };
 
-  useEffect(() => { fetchTodos(); }, []);
+  const deleteTodo = async (id: string) => {
+    try {
+      await databases.deleteDocument(
+        TODO_CONFIG.databaseId,
+        TODO_CONFIG.collectionId,
+        id,
+      );
+      await fetchTodos();
+    } catch (error) {
+      console.error('Failed to delete todo', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]); // Added fetchTodos to dependency array
 
   return (
     <TodoContext.Provider value={{ todos, addTodo, toggleTodo, deleteTodo }}>

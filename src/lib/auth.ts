@@ -1,5 +1,5 @@
 // src/lib/auth.ts
-import { account, ID } from './appwrite';
+import { ID, account } from './appwrite';
 
 export const authService = {
   // Create user and then immediately create a session
@@ -22,5 +22,5 @@ export const authService = {
     } catch {
       return null;
     }
-  }
+  },
 };
