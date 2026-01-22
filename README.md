@@ -37,7 +37,7 @@ You can view the live application here: [comuneo-todo-test-react.vercel.app](htt
 
 1. **Clone the repository**:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/CodePapi/comuneo-todo-test-react
 cd comuneo-todo-test-react
 
 ```
