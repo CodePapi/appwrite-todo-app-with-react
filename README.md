@@ -2,6 +2,14 @@
 
 A full-stack, recursive to-do list application built with **React**, **TypeScript**, and **Appwrite**. This project demonstrates the ability to handle complex nested data structures, third-party BaaS integration, and automated testing pipelines.
 
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://comuneo-todo-test-react.vercel.app)
+[![CI Checks](https://github.com/CodePapi/comuneo-todo-test-react/actions/workflows/ci.yml/badge.svg)](https://github.com/CodePapi/comuneo-todo-test-react/actions)
+
+## 🚀 Live Demo
+You can view the live application here: [comuneo-todo-test-react.vercel.app](https://comuneo-todo-test-react.vercel.app)
+
+---
+
 ## 🚀 Technical Stack
 
 * **Frontend**: React, Vite, TypeScript
