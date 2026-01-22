@@ -13,7 +13,7 @@
       "yarn.lock",
       "tsconfig.node.json",
       "tsconfig.app.json",
-      "backend/src/tests/items.test.ts",
+      "src/components/TodoItem.test.tsx",
       "./functions/send-welcome-email/src/main.js",
       "src/main.tsx",
       "./vite.config.ts",

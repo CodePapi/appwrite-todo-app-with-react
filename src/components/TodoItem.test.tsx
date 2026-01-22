@@ -1,16 +1,22 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import { TodoItem } from './TodoItem';
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { TodoProvider } from '../context/TodoContext';
+import { TodoItem } from './TodoItem';
 
-const mockTodo = {
+const mockTodo: any = {
   $id: '123',
   content: 'Parent Task',
   isCompleted: false,
   parentId: null,
   children: [
-    { $id: '456', content: 'Child Task', isCompleted: false, parentId: '123', children: [] }
-  ]
+    {
+      $id: '456',
+      content: 'Child Task',
+      isCompleted: false,
+      parentId: '123',
+      children: [],
+    },
+  ],
 };
 
 describe('TodoItem Component', () => {
@@ -18,9 +24,9 @@ describe('TodoItem Component', () => {
     render(
       <TodoProvider>
         <TodoItem todo={mockTodo} />
-      </TodoProvider>
+      </TodoProvider>,
     );
-    
+
     expect(screen.getByText('Parent Task')).toBeInTheDocument();
     expect(screen.getByText('Child Task')).toBeInTheDocument();
   });
@@ -29,9 +35,9 @@ describe('TodoItem Component', () => {
     render(
       <TodoProvider>
         <TodoItem todo={mockTodo} />
-      </TodoProvider>
+      </TodoProvider>,
     );
-    
+
     const deleteBtn = screen.getByLabelText(/delete task: parent task/i);
     expect(deleteBtn).toBeInTheDocument();
   });

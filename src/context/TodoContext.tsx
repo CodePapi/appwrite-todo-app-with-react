@@ -1,27 +1,18 @@
-import React, {
+import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
   useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
 import { ID, TODO_CONFIG, account, databases } from '../lib/appwrite';
-import { type Todo } from '../types/todo';
-
-interface TodoContextType {
-  todos: Todo[];
-  addTodo: (content: string, parentId?: string | null) => Promise<void>;
-  toggleTodo: (id: string, isCompleted: boolean) => Promise<void>;
-  deleteTodo: (id: string) => Promise<void>;
-}
+import { type Todo, type TodoContextType } from '../types';
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
-// FIX 1: buildTree lints (noForEach and noNonNullAssertion)
 const buildTree = (flatList: Todo[]): Todo[] => {
   const map = new Map<string, Todo>();
   const roots: Todo[] = [];
 
-  // Use for...of instead of forEach for better performance/standard compliance
   for (const item of flatList) {
     map.set(item.$id, { ...item, children: [] });
   }
@@ -32,7 +23,6 @@ const buildTree = (flatList: Todo[]): Todo[] => {
 
     if (item.parentId && map.has(item.parentId)) {
       const parent = map.get(item.parentId);
-      // Safely check if parent and children exist before pushing
       if (parent?.children) {
         parent.children.push(currentItem);
       }
@@ -47,8 +37,6 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
 
-  // FIX 2: Wrap fetchTodos in useCallback
-  // This prevents the useEffect from running infinitely if you were to add dependencies
   const fetchTodos = useCallback(async () => {
     try {
       const response = await databases.listDocuments(
@@ -122,7 +110,7 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     fetchTodos();
-  }, [fetchTodos]); // Added fetchTodos to dependency array
+  }, [fetchTodos]);
 
   return (
     <TodoContext.Provider value={{ todos, addTodo, toggleTodo, deleteTodo }}>

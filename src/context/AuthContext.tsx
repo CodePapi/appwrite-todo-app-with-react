@@ -1,5 +1,4 @@
 import { type Models } from 'appwrite';
-import type React from 'react';
 import {
   createContext,
   useCallback,
@@ -8,13 +7,7 @@ import {
   useState,
 } from 'react';
 import { authService } from '../lib/auth';
-
-interface AuthContextType {
-  user: Models.User<Models.Preferences> | null;
-  loading: boolean;
-  checkUser: () => Promise<void>;
-  logout: () => Promise<void>;
-}
+import { type AuthContextType } from '../types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -24,8 +17,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [loading, setLoading] = useState(true);
 
-  // FIX 1: Wrap checkUser in useCallback
-  // This memoizes the function so it doesn't change on every render
   const checkUser = useCallback(async () => {
     try {
       const currentUser = await authService.getCurrentUser();
@@ -46,8 +37,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // FIX 2: Add checkUser to the dependency array
-  // Now it's safe because useCallback ensures the reference is stable
   useEffect(() => {
     checkUser();
   }, [checkUser]);

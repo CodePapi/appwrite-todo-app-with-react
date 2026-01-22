@@ -1,15 +1,15 @@
 import { Account, Client, Databases, ID, Query } from 'appwrite';
 
 const client = new Client()
-  .setEndpoint('https://fra.cloud.appwrite.io/v1')
-  .setProject('69715cd90039d4952d91'); // Replace with your actual ID
+  .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+  .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
 
 export const account = new Account(client);
 export const databases = new Databases(client);
 
 export const TODO_CONFIG = {
-  databaseId: 'todos_db',
-  collectionId: 'todos',
+  databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
+  collectionId: import.meta.env.VITE_APPWRITE_TODOS_COLLECTION_ID,
 };
 
 export { ID, Query };

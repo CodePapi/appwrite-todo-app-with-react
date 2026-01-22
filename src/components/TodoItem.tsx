@@ -1,5 +1,4 @@
 import { Plus, Trash } from 'lucide-react';
-import type React from 'react';
 import { useState } from 'react';
 import { useTodos } from '../context/TodoContext';
 import { type Todo } from '../types/todo';
@@ -33,7 +32,6 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           {todo.content}
         </span>
 
-        {/* FIX 1: Explicitly set type="button" */}
         <button
           type="button"
           onClick={() => deleteTodo(todo.$id)}
@@ -44,12 +42,10 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
         </button>
       </div>
 
-      {/* Recursive Children */}
       {todo.children?.map((child) => (
         <TodoItem key={child.$id} todo={child} />
       ))}
 
-      {/* Add Sub-task Input */}
       <div className="flex items-center mt-1 ml-1">
         <Plus size={14} className="text-gray-400" />
         <input
