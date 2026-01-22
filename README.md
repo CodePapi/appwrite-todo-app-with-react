@@ -83,6 +83,7 @@ I have included UI tests specifically for the Todo component to verify recursive
 * **Data Privacy**: Currently, todo data is accessible to any authenticated users. In a real world production environment, I would implement Appwrite **Document-Level Permissions** to ensure users can only see their own tasks.
 * **Appwrite Functions**: I opted not to implement the SMTP Welcome Email function to focus on the core recursive logic and testing. However, I have extensive experience with **Nodemailer** and **Mailgun** in custom Node.js environments.
 * **Separation of Concerns**: While mostly decoupled, some logic remains in the Context providers to speed up development; ideally, business logic would be further abstracted into custom hooks.
+* **Fallbacks and Error Handlings**: While paid more attention to getting the app work, I had not put in so much effort in fallbacks like the pages mostly, but regardless, with full concentration, I pay attention to details.
 
 ---
 
