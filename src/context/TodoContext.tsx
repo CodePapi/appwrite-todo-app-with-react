@@ -75,7 +75,6 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
       const updateInTree = (list: Todo[]): Todo[] => {
         return list.map((todo) => {
           if (todo.$id === id) {
-            console.log('todo', todo);
             return { ...todo, isCompleted: newStatus };
           }
           if (todo.children && todo.children.length > 0) {
