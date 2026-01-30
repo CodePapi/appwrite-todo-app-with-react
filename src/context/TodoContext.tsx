@@ -32,6 +32,7 @@ const buildTree = (flatList: Todo[]): Todo[] => {
   }
   return roots;
 };
+
 export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -43,7 +44,11 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
         TODO_CONFIG.databaseId,
         TODO_CONFIG.collectionId,
       );
-      setTodos(buildTree(response.documents as unknown as Todo[]));
+      const userId = (await account.get()).$id;
+      const TodosData = response.documents.filter(
+        (todo) => todo.userId === userId,
+      );
+      setTodos(buildTree(TodosData.reverse() as unknown as Todo[]));
     } catch (error) {
       console.error('Failed to fetch todos:', error);
     }
@@ -66,11 +71,11 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const toggleTodo = async (id: string, isCompleted: boolean) => {
     const newStatus = !isCompleted;
-
     setTodos((prevTodos) => {
       const updateInTree = (list: Todo[]): Todo[] => {
         return list.map((todo) => {
           if (todo.$id === id) {
+            console.log('todo', todo);
             return { ...todo, isCompleted: newStatus };
           }
           if (todo.children && todo.children.length > 0) {
