@@ -14,30 +14,33 @@ beforeEach(() => {
   );
 
   // default list documents -> empty
-  cy.intercept(
-    'GET',
-    '**/v1/databases/**/collections/**/documents',
-    { statusCode: 200, body: { documents: [] } },
-  ).as('stubListDocuments');
+  cy.intercept('GET', '**/v1/databases/**/collections/**/documents', {
+    statusCode: 200,
+    body: { documents: [] },
+  }).as('stubListDocuments');
 });
 
 // Forward browser console messages into Cypress log to help debugging
 Cypress.on('window:before:load', (win) => {
   const methods = ['error', 'warn', 'info', 'log'] as const;
-  methods.forEach((m) => {
-    const orig = win.console[m];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (win.console as any)[m] = function (...args: any[]) {
+  for (const m of methods) {
+    const orig = win.console[m] as unknown as (...args: unknown[]) => unknown;
+    const consoleRecord = win.console as unknown as Record<
+      string,
+      (...args: unknown[]) => unknown
+    >;
+    consoleRecord[m] = function (...args: unknown[]) {
+      // forward to the real console so output appears in Cypress logs
       // eslint-disable-next-line no-console
-      console[m](...args);
+      // @ts-expect-error - console index signature for these keys is acceptable
+      console[m](...(args as unknown[] as []));
       try {
-        // attach to cy task log
-        // @ts-expect-error - Cypress exposes cy in test context
-        // no-op here; console output will still show in runner
+        // attach to cy task log if available (no-op otherwise)
+        // @ts-expect-error - Cypress may expose `cy` in the browser context during tests
       } catch (e) {
         // ignore
       }
       return orig.apply(this, args);
     };
-  });
+  }
 });
