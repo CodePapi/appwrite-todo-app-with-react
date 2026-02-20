@@ -39,10 +39,24 @@
         "useImportType": "off"
       },
       "complexity": {
-        "noStaticOnlyClass": "off"
+        "noStaticOnlyClass": "off",
+        "noForEach": "off"
       }
     }
   },
+  "overrides": [
+    {
+      "files": ["cypress/**"],
+      "rules": {
+        "suspicious": {
+          "noExplicitAny": "off"
+        },
+        "complexity": {
+          "noForEach": "off"
+        }
+      }
+    }
+  ],
   "javascript": {
     "parser": {
       "unsafeParameterDecoratorsEnabled": true

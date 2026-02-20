@@ -39,3 +39,7 @@ coverage/
 # Local Vite logs created during debugging
 /tmp/vite.log
 /tmp/vite.pid
+
+# Biome and editor caches
+.biome/
+.eslintcache
