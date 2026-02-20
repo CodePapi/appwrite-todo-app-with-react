@@ -7,7 +7,7 @@ A full-stack, recursive to-do list application built with **React**, **TypeScrip
 [![E2E Tests](https://github.com/CodePapi/comuneo-todo-test-react/actions/workflows/e2e.yml/badge.svg)](https://github.com/CodePapi/comuneo-todo-test-react/actions/workflows/e2e.yml)
 
 ## 🚀 Live Demo
-You can view the live application here: [comuneo-todo-test-react.vercel.app](https://comuneo-todo-test-react.vercel.app)
+You can view the live application here: [appwrite-todo-app-react.vercel.app](https://appwrite-todo-app-react.vercel.app)
 
 ---
 
