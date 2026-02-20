@@ -3,9 +3,17 @@ describe('Auth flows', () => {
     cy.fixture('user').as('userData');
 
     // ensure crucial Appwrite endpoints are stubbed before page load
-    cy.intercept('GET', '**/v1/account', { fixture: 'user.json' }).as('getAccount');
-    cy.intercept({ method: 'POST', url: /.*\/v1\/.*account.*/i }, { statusCode: 201, body: {} }).as('createUser');
-    cy.intercept({ method: 'POST', url: /.*\/v1\/.*sessions.*/i }, { statusCode: 201, body: {} }).as('createSession');
+    cy.intercept('GET', '**/v1/account', { fixture: 'user.json' }).as(
+      'getAccount',
+    );
+    cy.intercept(
+      { method: 'POST', url: /.*\/v1\/.*account.*/i },
+      { statusCode: 201, body: {} },
+    ).as('createUser');
+    cy.intercept(
+      { method: 'POST', url: /.*\/v1\/.*sessions.*/i },
+      { statusCode: 201, body: {} },
+    ).as('createSession');
   });
 
   it('navigates between login and signup', () => {
@@ -13,7 +21,7 @@ describe('Auth flows', () => {
       onBeforeLoad(win) {
         // surface runtime errors to Cypress runner
         // @ts-expect-error allow assigning for debugging
-        win.onerror = function (msg) {
+        win.onerror = (msg) => {
           // eslint-disable-next-line no-console
           console.error('window.onerror:', msg);
         };
@@ -27,7 +35,7 @@ describe('Auth flows', () => {
     cy.visit('/signup', {
       onBeforeLoad(win) {
         // @ts-expect-error allow assigning for debugging
-        win.onerror = function (msg) {
+        win.onerror = (msg) => {
           // eslint-disable-next-line no-console
           console.error('window.onerror:', msg);
         };
@@ -84,7 +92,7 @@ describe('Auth flows', () => {
     cy.visit('/login', {
       onBeforeLoad(win) {
         // @ts-expect-error allow assigning for debugging
-        win.onerror = function (msg) {
+        win.onerror = (msg) => {
           // eslint-disable-next-line no-console
           console.error('window.onerror:', msg);
         };

@@ -18,7 +18,7 @@ describe('Todo page interactions', () => {
     cy.visit('/todos', {
       onBeforeLoad(win) {
         // @ts-expect-error allow assigning for debugging
-        win.onerror = function (msg) {
+        win.onerror = (msg) => {
           // eslint-disable-next-line no-console
           console.error('window.onerror:', msg);
         };
@@ -86,7 +86,7 @@ describe('App basic navigation', () => {
     cy.visit('/login', {
       onBeforeLoad(win) {
         // @ts-expect-error allow assigning for debugging
-        win.onerror = function (msg) {
+        win.onerror = (msg) => {
           // eslint-disable-next-line no-console
           console.error('window.onerror:', msg);
         };
