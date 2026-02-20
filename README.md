@@ -1,4 +1,4 @@
-# Recursive To-Do Application (comuneo Intro Task)
+# Recursive To-Do Application (with authentication)
 
 A full-stack, recursive to-do list application built with **React**, **TypeScript**, and **Appwrite**. This project demonstrates the ability to handle complex nested data structures, third-party BaaS integration, and automated testing pipelines.
 
