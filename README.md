@@ -97,14 +97,6 @@ A workflow to run the E2E suite on push/PR is included at [.github/workflows/e2e
 
 ---
 
-## 📑 Project Reflections & Trade-offs
-
-* **Framework Choice**: I initially started with **Remix**, but encountered significant compatibility challenges with the latest versioning during setup. To prioritize delivering a functional, bug-free recursive logic within the time limit, I migrated to **Vite/React**.
-* **Appwrite Functions**: I opted not to implement the SMTP Welcome Email function to focus on the core recursive logic and testing. However, I have extensive experience with **Nodemailer**, **Mailchimp** and **Mailgun** in custom Node.js environments.
-* **Separation of Concerns**: While mostly decoupled, some logic remains in the Context providers to speed up development; ideally, business logic would be further abstracted into custom hooks.
-* **Fallbacks and Error Handlings**: While paid more attention to getting the app work, I had not put in so much effort in fallbacks like the pages mostly, but regardless, with full concentration, I pay attention to details.
-
----
 
 ## ♾️ DevOps & CI/CD (Thought Exercise)
 
@@ -112,7 +104,7 @@ As part of the project requirements, I implemented a modern CI/CD strategy:
 
 1. **GitHub Actions (CI)**:
 * Triggered on every Pull Request to `main`.
-* **Linting**: Runs ESLint to check for code quality.
+* **Linting**: Runs Linter to check for code quality.
 * **Testing**: Runs the Vitest suite to ensure no regressions in the recursive logic.
 
 
@@ -125,13 +117,6 @@ As part of the project requirements, I implemented a modern CI/CD strategy:
 3. **Production Readiness**:
 * In a larger scale project, I would utilize **Docker** to containerize the environment, ensuring parity between local development and the cloud server.
 
-
-
----
-
-### Closing Note
-
-Thank you for this challenge! It provided a great introduction to the Remix philosophy and the Appwrite ecosystem. Even though I am uncertain given my decisions like not using Remix for instance, I am still very grateful for the opportunity. 
 
 ---
 
