@@ -3,7 +3,7 @@ describe('Auth flows', () => {
     cy.fixture('user').as('userData');
   });
 
-  it('navigates between login and signup', function () {
+  it('navigates between login and signup', () => {
     cy.visit('/login');
     cy.contains('Welcome Back').should('be.visible');
 
@@ -16,17 +16,22 @@ describe('Auth flows', () => {
     cy.contains('Welcome Back').should('be.visible');
   });
 
-  it('signs up and redirects to todos', function () {
+  it('signs up and redirects to todos', () => {
     // stub user registration and subsequent calls
     // match account creation broadly
-    cy.intercept({ method: 'POST', url: /.*\/v1\/.*account.*/i }, { statusCode: 201, body: {} }).as(
-      'createUser',
-    );
+    cy.intercept(
+      { method: 'POST', url: /.*\/v1\/.*account.*/i },
+      { statusCode: 201, body: {} },
+    ).as('createUser');
     // match any session creation POST (covers /v1/account/sessions and subpaths)
-    cy.intercept({ method: 'POST', url: /.*\/v1\/.*sessions.*/i }, { statusCode: 201, body: {} }).as(
-      'createSession',
-    );
-    cy.intercept({ method: 'GET', url: /.*\/v1\/.*account.*/i }, { fixture: 'user.json' }).as('getAccount');
+    cy.intercept(
+      { method: 'POST', url: /.*\/v1\/.*sessions.*/i },
+      { statusCode: 201, body: {} },
+    ).as('createSession');
+    cy.intercept(
+      { method: 'GET', url: /.*\/v1\/.*account.*/i },
+      { fixture: 'user.json' },
+    ).as('getAccount');
 
     cy.visit('/signup');
 
@@ -44,11 +49,15 @@ describe('Auth flows', () => {
     cy.contains('Welcome back, Cypress User').should('be.visible');
   });
 
-  it('logs in and redirects to todos', function () {
-    cy.intercept({ method: 'POST', url: /.*\/v1\/.*sessions.*/i }, { statusCode: 201, body: {} }).as(
-      'createSession',
-    );
-    cy.intercept({ method: 'GET', url: /.*\/v1\/.*account.*/i }, { fixture: 'user.json' }).as('getAccount');
+  it('logs in and redirects to todos', () => {
+    cy.intercept(
+      { method: 'POST', url: /.*\/v1\/.*sessions.*/i },
+      { statusCode: 201, body: {} },
+    ).as('createSession');
+    cy.intercept(
+      { method: 'GET', url: /.*\/v1\/.*account.*/i },
+      { fixture: 'user.json' },
+    ).as('getAccount');
 
     cy.visit('/login');
 
