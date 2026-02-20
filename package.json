@@ -14,8 +14,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:open": "cypress open --config-file cypress.config.cjs",
+    "cy:run": "cypress run --config-file cypress.config.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
