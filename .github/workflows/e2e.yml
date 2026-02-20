@@ -34,9 +34,10 @@ jobs:
 
       - name: Start preview server (serve ./dist)
         run: |
-          # Serve the built `dist` directory using http-server (via npx)
-          # Running in background so the workflow can continue to the wait step
-          npx http-server ./dist -p 5173 -a 127.0.0.1 &
+          # Serve the built `dist` directory with SPA fallback using `serve -s`.
+          # `serve -s` rewrites unknown routes to index.html which is required
+          # for client-side routing in single-page apps.
+          npx serve -s ./dist -l 5173 &
 
       - name: Wait for server
         run: |
