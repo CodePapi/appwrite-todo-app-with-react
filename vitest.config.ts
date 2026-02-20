@@ -8,7 +8,10 @@ export default mergeConfig(viteConfig, defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
-    exclude: ['cypress/**'],
+    // Only run tests inside the project's `src` directory. Exclude node_modules
+    // and other external test suites that ship with dependencies.
+    include: ['src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}'],
+    exclude: ['node_modules/**', 'cypress/**', 'dist/**'],
     alias: {
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
