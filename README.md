@@ -1,12 +1,13 @@
-# Recursive To-Do Application (comuneo Intro Task)
+# Recursive To-Do Application (with authentication)
 
 A full-stack, recursive to-do list application built with **React**, **TypeScript**, and **Appwrite**. This project demonstrates the ability to handle complex nested data structures, third-party BaaS integration, and automated testing pipelines.
 
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://comuneo-todo-test-react.vercel.app)
 [![CI Checks](https://github.com/CodePapi/comuneo-todo-test-react/actions/workflows/ci.yml/badge.svg)](https://github.com/CodePapi/comuneo-todo-test-react/actions)
+[![E2E Tests](https://github.com/CodePapi/comuneo-todo-test-react/actions/workflows/e2e.yml/badge.svg)](https://github.com/CodePapi/comuneo-todo-test-react/actions/workflows/e2e.yml)
 
 ## 🚀 Live Demo
-You can view the live application here: [comuneo-todo-test-react.vercel.app](https://comuneo-todo-test-react.vercel.app)
+You can view the live application here: [appwrite-todo-app-react.vercel.app](https://appwrite-todo-app-react.vercel.app)
 
 ---
 
@@ -17,7 +18,7 @@ You can view the live application here: [comuneo-todo-test-react.vercel.app](htt
 * **Routing**: React Router DOM
 * **Backend as a Service**: Appwrite (Auth & Database)
 * **State Management**: React Context API
-* **Testing**: Vitest & React Testing Library
+* **Testing**: Vitest & React Testing Library, Cypress for E2E
 * **DevOps**: GitHub Actions & Vercel
 
 ---
@@ -70,10 +71,27 @@ npm run dev
 
 ## 🧪 Testing
 
-I have included UI tests specifically for the Todo component to verify recursive rendering and user interactions.
+Unit & component tests are powered by `vitest` and `@testing-library/react`.
 
-* **Run tests**: `npm run test`
-* **Interactive UI tests**: `npm run test:ui`
+- **Run unit tests**: `npm run test`
+- **Interactive unit tests**: `npm run test:ui`
+
+### E2E (Cypress)
+
+This project includes Cypress end-to-end tests that exercise auth flows and the Todo UI. The Cypress config is in [cypress.config.ts](cypress.config.ts) and specs live under `cypress/e2e`.
+
+- **Open interactive runner**: `npm run cy:open`
+- **Run headless**: `npm run cy:run`
+
+There is also a short guide with examples in [TESTING.md](TESTING.md).
+
+Notes:
+- The E2E tests currently stub Appwrite network calls (fixtures and `cy.intercept`) so they run reliably in CI without an external Appwrite instance.
+- If you want to run fully-integrated E2E tests against a live Appwrite backend, you must provide valid Appwrite environment variables (see below) and configure credentials/secrets in your CI provider.
+
+### CI / GitHub Actions
+
+A workflow to run the E2E suite on push/PR is included at [.github/workflows/e2e.yml](.github/workflows/e2e.yml). It builds the app, starts a preview server, waits for the server to be available, then runs `npm run cy:run`. On failure screenshots and videos are uploaded as artifacts.
 
 ---
 
@@ -114,3 +132,15 @@ As part of the project requirements, I implemented a modern CI/CD strategy:
 Thank you for this challenge! It provided a great introduction to the Remix philosophy and the Appwrite ecosystem. Even though I am uncertain given my decisions like not using Remix for instance, I am still very grateful for the opportunity. 
 
 ---
+
+## ⚠️ Missing / Required Environment & Notes
+
+- **Environment file**: Create `.env` based on [.env.sample](.env.sample) with these keys:
+	- `VITE_APPWRITE_ENDPOINT`
+	- `VITE_APPWRITE_PROJECT_ID`
+	- `VITE_APPWRITE_DATABASE_ID`
+	- `VITE_APPWRITE_TODOS_COLLECTION_ID`
+
+- **Local dev vs E2E**: The app will attempt to contact Appwrite at runtime (for `account.get()` in the auth provider). While the shipped Cypress tests stub those network calls, running the app without stubs requires a running Appwrite project and valid environment variables.
+
+- **CI secrets**: If you change the workflow to run against a live Appwrite instance, add the Appwrite credentials as repository secrets and update `.github/workflows/e2e.yml` to inject them into the preview environment.
