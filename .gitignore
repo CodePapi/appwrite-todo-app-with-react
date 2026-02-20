@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Cypress test artifacts
+cypress/screenshots/
+cypress/videos/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Misc caches and temp files
+.cache/
+.vite/
+/.tmp
+
+# Local Vite logs created during debugging
+/tmp/vite.log
+/tmp/vite.pid
