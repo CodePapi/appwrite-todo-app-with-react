@@ -36,7 +36,17 @@ jobs:
         run: npm run preview &
 
       - name: Wait for server
-        run: npx wait-on http://localhost:5173 --timeout 60000
+        run: |
+          echo "Waiting for http://localhost:5173 to be available..."
+          for i in {1..60}; do
+            if curl -sSf http://localhost:5173 >/dev/null; then
+              echo "Server is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server did not start in time" >&2
+          exit 1
 
       - name: Run Cypress tests
         run: npm run cy:run
