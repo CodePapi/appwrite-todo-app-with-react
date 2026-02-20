@@ -41,22 +41,12 @@
       "complexity": {
         "noStaticOnlyClass": "off",
         "noForEach": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
       }
     }
   },
-  "overrides": [
-    {
-      "files": ["cypress/**"],
-      "rules": {
-        "suspicious": {
-          "noExplicitAny": "off"
-        },
-        "complexity": {
-          "noForEach": "off"
-        }
-      }
-    }
-  ],
   "javascript": {
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
