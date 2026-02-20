@@ -15,7 +15,15 @@ describe('Todo page interactions', () => {
   });
 
   it('shows empty state and adds a new todo', () => {
-    cy.visit('/todos');
+    cy.visit('/todos', {
+      onBeforeLoad(win) {
+        // @ts-expect-error allow assigning for debugging
+        win.onerror = function (msg) {
+          // eslint-disable-next-line no-console
+          console.error('window.onerror:', msg);
+        };
+      },
+    });
 
     cy.wait('@getAccount');
     cy.wait('@listDocumentsEmpty');
@@ -75,7 +83,15 @@ describe('Todo page interactions', () => {
 });
 describe('App basic navigation', () => {
   it('shows login and navigates to signup', () => {
-    cy.visit('/login');
+    cy.visit('/login', {
+      onBeforeLoad(win) {
+        // @ts-expect-error allow assigning for debugging
+        win.onerror = function (msg) {
+          // eslint-disable-next-line no-console
+          console.error('window.onerror:', msg);
+        };
+      },
+    });
     cy.contains('Welcome Back').should('be.visible');
 
     cy.contains('Create account').click();
